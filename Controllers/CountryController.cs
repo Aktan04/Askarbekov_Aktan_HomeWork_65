@@ -37,4 +37,15 @@ public class CountryController : Controller
             return NotFound();
         return new ObjectResult(country);
     }
+    
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<Country>> Delete(int id)
+    {
+        Country? country = await _context.Countries.FirstOrDefaultAsync(c => c.Id == id);
+        if (country == null)
+            return NotFound();
+        _context.Countries.Remove(country);
+        await _context.SaveChangesAsync();
+        return Ok(country);
+    }
 }
