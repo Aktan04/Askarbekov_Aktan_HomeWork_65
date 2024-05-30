@@ -48,4 +48,16 @@ public class CountryController : Controller
         await _context.SaveChangesAsync();
         return Ok(country);
     }
+    
+    [HttpPut]
+    public async Task<ActionResult<Country>> Put(Country country)
+    {
+        if (country == null)
+            return BadRequest();
+        if (!_context.Countries.Any(c => c.Id == country.Id))
+            return NotFound();
+        _context.Update(country);
+        await _context.SaveChangesAsync();
+        return Ok(country);
+    }
 }
