@@ -20,7 +20,7 @@ public class CountryController : Controller
         return await _context.Countries.ToListAsync();
     }
     
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<Country>> Get(int id)
     {
         Country? country = await _context.Countries.FirstOrDefaultAsync(c => c.Id == id);
@@ -57,6 +57,16 @@ public class CountryController : Controller
         if (!_context.Countries.Any(c => c.Id == country.Id))
             return NotFound();
         _context.Update(country);
+        await _context.SaveChangesAsync();
+        return Ok(country);
+    }
+    
+    [HttpPost]
+    public async Task<ActionResult<Country>> Post(Country country)
+    {
+        if (country == null || _context.Countries.Any(c => c.Id == country.Id))
+            return BadRequest();
+        _context.Countries.Add(country);
         await _context.SaveChangesAsync();
         return Ok(country);
     }
