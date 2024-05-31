@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace HomeWork65.Controllers;
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]/[action]")]
 public class CountryController : Controller
 {
     private CountryContext _context;
@@ -15,13 +15,14 @@ public class CountryController : Controller
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<Country>>> Get()
+    public async Task<ActionResult<List<Country>>> GetAll()
     {
-        return await _context.Countries.ToListAsync();
+        var countries = await _context.Countries.ToListAsync();
+        return countries != null ? countries : new List<Country>();
     }
     
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult<Country>> Get(int id)
+    [HttpGet]
+    public async Task<ActionResult<Country>> GetById(int id)
     {
         Country? country = await _context.Countries.FirstOrDefaultAsync(c => c.Id == id);
         if (country == null)
@@ -29,8 +30,8 @@ public class CountryController : Controller
         return new ObjectResult(country);
     }
     
-    [HttpGet("{name}")]
-    public async Task<ActionResult<Country>> Get(string name)
+    [HttpGet]
+    public async Task<ActionResult<Country>> GetByName(string name)
     {
         Country? country = await _context.Countries.FirstOrDefaultAsync(c => c.Name.ToLower() == name.ToLower() || c.OfficialName.ToLower() == name.ToLower());
         if (country == null)
